@@ -67,7 +67,7 @@ class _HealthCareScreenState extends State<HealthCareScreen> {
                                       onPressed: () async {
                                         updateInfoValidate(uid);
                                       },
-                                      child: Text('Validate'))
+                                      child: Text('Validate info'))
                                 ],
                               );
                             }),
