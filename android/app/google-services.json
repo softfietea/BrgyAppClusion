@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "504682230273",
+    "project_id": "brgyapp-be5dc",
+    "storage_bucket": "brgyapp-be5dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:504682230273:android:2220982436ee405b0dc600",
+        "android_client_info": {
+          "package_name": "com.example.brgyapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "504682230273-gh800s7m1mr96kqeo71t749fcj7k5p3m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPzpjqSYEFpVCUFL7ppmCGMSlvOXDCMT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "504682230273-gh800s7m1mr96kqeo71t749fcj7k5p3m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
