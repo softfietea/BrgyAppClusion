@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:brgyapp/services/authservices.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart';
 
 class FormScreen extends StatefulWidget {
   @override
@@ -18,6 +23,41 @@ class _FormScreenState extends State<FormScreen> {
   TextEditingController specifyOthers = TextEditingController();
   TextEditingController addressUser = TextEditingController();
   bool conditionIsChecked = false;
+
+  UploadTask task;
+  String uploadStatus = "";
+  String urlTest = "";
+  File _image;
+
+  Future getImage() async {
+    var image =
+        await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = File(image.path);
+      print('image Path $_image');
+      uploadStatus = 'Uploading';
+    });
+  }
+
+  Future uploadPicture(String uid) async {
+    String fileName = basename(_image.path);
+    final destination = 'files/users/$uid/HealthID/$fileName';
+
+    Reference firebaseStorageRef = FirebaseStorage.instance.ref(destination);
+    task = firebaseStorageRef.putFile(_image);
+
+    final snapshot = await task.whenComplete(() => {
+          setState(() {
+            uploadStatus = 'Sucessfully Uploaded';
+          })
+        });
+    final urlDownload = await snapshot.ref.getDownloadURL();
+
+    setState(() {
+      urlTest = urlDownload;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -285,6 +325,27 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                   ),
                 )),
+
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      side: BorderSide(width: 1.0, color: Color(0xffF5C69D)),
+                      primary: Color(0xffF5C69D),
+                      padding: EdgeInsets.fromLTRB(63, 10, 63, 10)),
+                  onPressed: () async {
+                    var currentUser =
+                        context.read<AuthService>().getCurrentUser();
+                    print(currentUser);
+                  },
+                  child: Text(
+                    'Upload Vaccination ID or any Proof',
+                    style: GoogleFonts.spectral(
+                        color: Color(0xff3F5856),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700),
+                  )),
+            ),
 
             Row(
               children: [
