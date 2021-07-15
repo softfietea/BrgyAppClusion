@@ -1,5 +1,6 @@
 import 'package:brgyapp/services/authservices.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -16,9 +17,40 @@ class _HealthCareScreenState extends State<HealthCareScreen> {
       FirebaseFirestore.instance.collection('users');
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  String task;
+  String errorText;
+
+  String urlTest;
+  String destination;
+
   Future updateInfoValidate(index) async {
     return await useCollection.doc(index).update({
       'infovalidated': 'yes',
+    });
+  }
+
+  Future showHealthID(uid) async {
+    String fileName = "HealthID";
+    String destination = 'files/users/$uid/HealthID/$fileName';
+    Reference firebaseStorageRef = FirebaseStorage.instance.ref(destination);
+    try {
+      task = await firebaseStorageRef.getDownloadURL();
+    } catch (e) {
+      setState(() {
+        errorText = e.toString();
+      });
+    }
+    setState(() {
+      urlTest = task;
+    });
+  }
+
+  Future refreshDialog() {
+    setState(() {
+      task = null;
+      errorText = null;
+      urlTest = null;
+      destination = null;
     });
   }
 
@@ -67,7 +99,74 @@ class _HealthCareScreenState extends State<HealthCareScreen> {
                                       onPressed: () async {
                                         updateInfoValidate(uid);
                                       },
-                                      child: Text('Validate'))
+                                      child: Text('Validate')),
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        await refreshDialog();
+                                        await showHealthID(uid);
+                                        showDialog(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return WillPopScope(
+                                                onWillPop: () {},
+                                                child: AlertDialog(
+                                                  content: Container(
+                                                    height: 400,
+                                                    child: Column(
+                                                      children: [
+                                                        urlTest != null
+                                                            ? Container(
+                                                                width: 350,
+                                                                height: 350,
+                                                                child: Image
+                                                                    .network(
+                                                                  urlTest,
+                                                                  loadingBuilder:
+                                                                      (context,
+                                                                          child,
+                                                                          loadingProgress) {
+                                                                    if (loadingProgress ==
+                                                                        null)
+                                                                      return child;
+                                                                    return Center(
+                                                                      child:
+                                                                          CircularProgressIndicator(
+                                                                        value: loadingProgress.expectedTotalBytes !=
+                                                                                null
+                                                                            ? loadingProgress.cumulativeBytesLoaded /
+                                                                                loadingProgress.expectedTotalBytes
+                                                                            : null,
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              )
+                                                            : Container(
+                                                                height: 50,
+                                                                width: 50,
+                                                                child: Text(
+                                                                    errorText),
+                                                              ),
+                                                        ElevatedButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                urlTest = null;
+
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                              });
+                                                            },
+                                                            child: Text('Back'))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            });
+                                      },
+                                      child: Text('View Image'))
                                 ],
                               );
                             }),
