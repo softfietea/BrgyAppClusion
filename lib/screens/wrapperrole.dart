@@ -6,6 +6,7 @@ import 'package:brgyapp/screens/emailverification.dart';
 import 'package:brgyapp/screens/healthcare/healthcarevalidation.dart';
 import 'package:brgyapp/screens/loginscreen.dart';
 import 'package:brgyapp/screens/userhome.dart';
+import 'package:brgyapp/screens/wrapperBrgyID.dart';
 import 'package:brgyapp/screens/wrapperauth.dart';
 import 'package:brgyapp/services/authservices.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,7 +39,7 @@ class _WrapperRoleState extends State<WrapperRole> {
             } else if (userData['role'] == 'healthcare') {
               return HealthCareScreen();
             } else if (userData['role'] == 'resident') {
-              return UserHomeScreen();
+              return WrapperBrgyID();
             }
             return LoginScreen();
           }),

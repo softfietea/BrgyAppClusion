@@ -15,8 +15,14 @@ class AuthService {
   User currentUser;
 
   /// Function to get the currently logged in user
-  void getCurrentUser() {
+  String getCurrentUser() {
     currentUser = auth.currentUser;
+    return currentUser.uid.toString();
+  }
+
+  String getCurrentName() {
+    currentUser = auth.currentUser;
+    return currentUser.displayName.toString();
   }
 
   Future<bool> get userVerified async {

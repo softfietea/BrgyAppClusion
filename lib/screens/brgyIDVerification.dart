@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:brgyapp/services/authservices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,13 +10,13 @@ import 'package:provider/provider.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart';
 
-class EmailVerificationScreen extends StatefulWidget {
+class BrgyIDVerificationScreen extends StatefulWidget {
   @override
-  _EmailVerificationScreenState createState() =>
-      _EmailVerificationScreenState();
+  _BrgyIDVerificationScreenState createState() =>
+      _BrgyIDVerificationScreenState();
 }
 
-class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+class _BrgyIDVerificationScreenState extends State<BrgyIDVerificationScreen> {
   UploadTask task;
   String uploadStatus = "";
   String urlTest = "";
@@ -34,7 +35,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   Future uploadPicture(String uid) async {
     String fileName = basename(_image.path);
-    final destination = 'files/users/$uid/BrgyID/$fileName';
+    final destination = 'files/users/$uid/$fileName';
 
     Reference firebaseStorageRef = FirebaseStorage.instance.ref(destination);
     task = firebaseStorageRef.putFile(_image);
@@ -59,7 +60,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
           children: [
             Container(
                 margin: EdgeInsets.fromLTRB(0, 200, 0, 0),
-                child: Text('User Verification',
+                child: Text('Your Brgy ID is not validated yet',
                     style: GoogleFonts.spectral(
                         color: Color(0xffF5C69D),
                         fontSize: 40,
@@ -67,7 +68,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             Container(
               margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: Text(
-                  'An Email has been Sent to you, please upload your brgy ID for validation that you are actually living in this brgy. If you will be Identified as not residents In Brgy. 347, your account will be deleted. Check your Email for verification before logging in.',
+                  'Please contact brgy Chairman for validating your account',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.spectral(
                       color: Color(0xffF5C69D),

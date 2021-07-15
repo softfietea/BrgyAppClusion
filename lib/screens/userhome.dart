@@ -13,6 +13,23 @@ class UserHomeScreen extends StatefulWidget {
 }
 
 class _UserHomeScreenState extends State<UserHomeScreen> {
+  String userName = " ";
+  String firstNameeto;
+  String lastNameeto;
+
+  @override
+  void initState() {
+    super.initState();
+
+    userName = context.read<AuthService>().getCurrentName();
+
+    var names = userName.split(' ');
+    print(names);
+    String firstName = names[0];
+    String lastName = names[1];
+    firstNameeto = firstName;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +79,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             Container(
                 margin: EdgeInsets.fromLTRB(0, 80, 195, 0),
                 child: Text(
-                  'Hello, User',
+                  'Hello, $firstNameeto',
                   style: GoogleFonts.spectral(
                       color: Color(0xffF5C69D),
                       fontSize: 30,
@@ -90,7 +107,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     Navigator.pushNamed(context, '/userform');
                   },
                   child: Text(
-                    'Participate',
+                    'Set Health Status',
                     style: GoogleFonts.spectral(
                         color: Color(0xffF5C69D),
                         fontSize: 14,

@@ -20,6 +20,7 @@ class DatabaseService {
         'fullname': fullname,
         'email': email,
         'address': "",
+        'brgyIDValidated': "yes",
         'role': "admin",
       });
     } else if (email == "tribaco.alfie@gmail.com") {
@@ -27,6 +28,7 @@ class DatabaseService {
         'fullname': fullname,
         'email': email,
         'address': "",
+        'brgyIDValidated': "yes",
         'role': "healthcare",
       });
     } else {
@@ -35,6 +37,7 @@ class DatabaseService {
         'email': email,
         'address': "",
         'infovalidated': "no",
+        'brgyIDValidated': "no",
         'role': "resident",
       });
     }

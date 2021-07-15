@@ -21,6 +21,12 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
     });
   }
 
+  Future updateBrgyIDValidate(index) async {
+    return await useCollection.doc(index).update({
+      'brgyIDValidated': 'yes',
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +45,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                 StreamBuilder<QuerySnapshot>(
                     stream: widget._firestore
                         .collection('users')
-                        .where('infovalidated', isEqualTo: "yes")
+                        .where('role', isEqualTo: "resident")
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
@@ -54,7 +60,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                               String itemTitle =
                                   snapshot.data.docs[index]["fullname"];
                               String itemDescription =
-                                  snapshot.data.docs[index]["infovalidated"];
+                                  snapshot.data.docs[index]["email"];
                               return Row(
                                 children: [
                                   Expanded(
@@ -66,7 +72,12 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                                       onPressed: () async {
                                         updateInfoValidate(uid);
                                       },
-                                      child: Text('Delete'))
+                                      child: Text('Ban')),
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        updateBrgyIDValidate(uid);
+                                      },
+                                      child: Text('Validate'))
                                 ],
                               );
                             }),
