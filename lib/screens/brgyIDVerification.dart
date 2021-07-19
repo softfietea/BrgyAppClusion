@@ -34,8 +34,8 @@ class _BrgyIDVerificationScreenState extends State<BrgyIDVerificationScreen> {
   }
 
   Future uploadPicture(String uid) async {
-    String fileName = basename(_image.path);
-    final destination = 'files/users/$uid/$fileName';
+    String fileName = "BrgyID";
+    final destination = 'files/users/$uid/BrgyID/$fileName';
 
     Reference firebaseStorageRef = FirebaseStorage.instance.ref(destination);
     task = firebaseStorageRef.putFile(_image);
@@ -45,7 +45,7 @@ class _BrgyIDVerificationScreenState extends State<BrgyIDVerificationScreen> {
             uploadStatus = 'Sucessfully Uploaded';
           })
         });
-    final urlDownload = await snapshot.ref.getDownloadURL();
+    String urlDownload = await snapshot.ref.getDownloadURL();
 
     setState(() {
       urlTest = urlDownload;
