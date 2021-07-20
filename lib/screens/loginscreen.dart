@@ -2,7 +2,6 @@ import 'package:brgyapp/services/authservices.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../model/customvalidation.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,6 +13,17 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController lpassword = TextEditingController();
 
   final GlobalKey<FormState> _formLogin = GlobalKey<FormState>();
+
+  _validateEmail() {
+    if (lemail == null) {
+      return ('Please input an Email');
+    }
+    if (lemail.value.toString().length > 50 &&
+        lemail.value.toString().length < 5) {
+      return ('Invalid Email');
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,17 +48,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
                       child: TextFormField(
                         style: TextStyle(color: Colors.white),
-                        validator: (lemail) {
-                          return context
-                              .read<CustomValidation>()
-                              .emailValidation(lemail);
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return ('Please input an Email');
+                          } else if (value.length > 50 && value.length < 5) {
+                            return ('Invalid Email');
+                          }
+                          return null;
                         },
                         controller: lemail,
                         autofocus: false,
                         decoration: InputDecoration(
-                          errorText: context
-                              .read<CustomValidation>()
-                              .emailValidation(lemail.text),
                           labelText: "Email",
                           fillColor: Colors.white,
                           labelStyle: GoogleFonts.spectral(
@@ -74,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
                       margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
                       child: TextFormField(
+                        validator: _validateEmail(),
                         obscureText: true,
                         style: TextStyle(color: Colors.white),
                         controller: lpassword,
@@ -134,9 +145,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             primary: Color(0xffF5C69D),
                             padding: EdgeInsets.fromLTRB(70, 10, 70, 10)),
                         onPressed: () async {
-                          await context.read<AuthService>().signIn(
-                              lemail.text.trim(), lpassword.text.trim());
-                          Navigator.pushNamed(context, '/');
+                          if (_formLogin.currentState.validate()) {
+                            await context.read<AuthService>().signIn(
+                                lemail.text.trim(), lpassword.text.trim());
+                            Navigator.pushNamed(context, '/');
+                          }
                         },
                         child: Text(
                           'Login',

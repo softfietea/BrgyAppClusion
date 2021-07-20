@@ -1,6 +1,10 @@
+import 'dart:ui';
+
 import 'package:brgyapp/model/userapp.dart';
 import 'package:brgyapp/services/databaseservice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthService {
   FirebaseAuth _auth;
@@ -41,8 +45,50 @@ class AuthService {
       _loggedUser != null
           ? _loggedUser = signInUser.user
           : print('failed to sign in');
-    } catch (e) {
-      print(e.toString());
+    } on FirebaseAuthException catch (e) {
+      if (e.message == "Given String is empty or null") {
+        Fluttertoast.showToast(
+            textColor: Color(0xff3F5856),
+            msg: "Please Input an email and password",
+            backgroundColor: Color(0xffF5C69D));
+      } else if (e.code == "user-not-found") {
+        Fluttertoast.showToast(
+            textColor: Color(0xff3F5856),
+            msg: "There is no such registered user",
+            backgroundColor: Color(0xffF5C69D));
+      } else if (e.code == "invalid-email") {
+        Fluttertoast.showToast(
+            textColor: Color(0xff3F5856),
+            msg: "The Email is invalid",
+            backgroundColor: Color(0xffF5C69D));
+      } else if (e.code == "invalid-password") {
+        Fluttertoast.showToast(
+            textColor: Color(0xff3F5856),
+            msg: "The Password is Invalid",
+            backgroundColor: Color(0xffF5C69D));
+      } else if (e.code == "too-many-requests") {
+        Fluttertoast.showToast(
+            textColor: Color(0xff3F5856),
+            msg: "Too many request please try again later",
+            backgroundColor: Color(0xffF5C69D));
+      } else if (e.code == "wrong-password") {
+        Fluttertoast.showToast(
+            textColor: Color(0xff3F5856),
+            msg: "Wrong password,please input a correct password",
+            backgroundColor: Color(0xffF5C69D));
+      } else if (e.code == "network-request-failed") {
+        Fluttertoast.showToast(
+            textColor: Color(0xff3F5856),
+            msg: "login Failed, check your connection",
+            backgroundColor: Color(0xffF5C69D));
+      } else {
+        Fluttertoast.showToast(
+            textColor: Color(0xff3F5856),
+            msg: e.code,
+            backgroundColor: Color(0xffF5C69D));
+      }
+    } on PlatformException catch (er) {
+      print("Failed Platform Code: " + er.code);
     }
   }
 

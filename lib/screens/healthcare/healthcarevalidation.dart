@@ -45,7 +45,7 @@ class _HealthCareScreenState extends State<HealthCareScreen> {
     });
   }
 
-  Future refreshDialog() {
+  refreshDialog() {
     setState(() {
       task = null;
       errorText = null;
@@ -65,7 +65,7 @@ class _HealthCareScreenState extends State<HealthCareScreen> {
           Column(
         children: [
           Container(
-            height: 200,
+            height: 650,
             margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
             child: Column(
               children: [
@@ -95,78 +95,89 @@ class _HealthCareScreenState extends State<HealthCareScreen> {
                                         itemTitle: itemTitle,
                                         itemDescription: itemDescription),
                                   ),
-                                  ElevatedButton(
-                                      onPressed: () async {
-                                        updateInfoValidate(uid);
-                                      },
-                                      child: Text('Validate')),
-                                  ElevatedButton(
-                                      onPressed: () async {
-                                        await refreshDialog();
-                                        await showHealthID(uid);
-                                        showDialog(
-                                            barrierDismissible: false,
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return WillPopScope(
-                                                onWillPop: () {},
-                                                child: AlertDialog(
-                                                  content: Container(
-                                                    height: 400,
-                                                    child: Column(
-                                                      children: [
-                                                        urlTest != null
-                                                            ? Container(
-                                                                width: 350,
-                                                                height: 350,
-                                                                child: Image
-                                                                    .network(
-                                                                  urlTest,
-                                                                  loadingBuilder:
-                                                                      (context,
-                                                                          child,
-                                                                          loadingProgress) {
-                                                                    if (loadingProgress ==
-                                                                        null)
-                                                                      return child;
-                                                                    return Center(
-                                                                      child:
-                                                                          CircularProgressIndicator(
-                                                                        value: loadingProgress.expectedTotalBytes !=
-                                                                                null
-                                                                            ? loadingProgress.cumulativeBytesLoaded /
-                                                                                loadingProgress.expectedTotalBytes
-                                                                            : null,
-                                                                      ),
-                                                                    );
-                                                                  },
+                                  Container(
+                                    height: 70,
+                                    child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            primary: Color(0xffF5C69D)),
+                                        onPressed: () async {
+                                          updateInfoValidate(uid);
+                                        },
+                                        child: Icon(Icons.healing_outlined)),
+                                  ),
+                                  Container(
+                                    height: 70,
+                                    margin: EdgeInsets.fromLTRB(3.5, 0, 0, 0),
+                                    child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            primary: Color(0xffF5C69D)),
+                                        onPressed: () async {
+                                          await refreshDialog();
+                                          await showHealthID(uid);
+                                          showDialog(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return WillPopScope(
+                                                  onWillPop: () {},
+                                                  child: AlertDialog(
+                                                    content: Container(
+                                                      height: 400,
+                                                      child: Column(
+                                                        children: [
+                                                          urlTest != null
+                                                              ? Container(
+                                                                  width: 350,
+                                                                  height: 350,
+                                                                  child: Image
+                                                                      .network(
+                                                                    urlTest,
+                                                                    loadingBuilder:
+                                                                        (context,
+                                                                            child,
+                                                                            loadingProgress) {
+                                                                      if (loadingProgress ==
+                                                                          null)
+                                                                        return child;
+                                                                      return Center(
+                                                                        child:
+                                                                            CircularProgressIndicator(
+                                                                          value: loadingProgress.expectedTotalBytes != null
+                                                                              ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                                                                              : null,
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                )
+                                                              : Container(
+                                                                  height: 50,
+                                                                  width: 50,
+                                                                  child: Text(
+                                                                      errorText),
                                                                 ),
-                                                              )
-                                                            : Container(
-                                                                height: 50,
-                                                                width: 50,
-                                                                child: Text(
-                                                                    errorText),
-                                                              ),
-                                                        ElevatedButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                urlTest = null;
+                                                          ElevatedButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  urlTest =
+                                                                      null;
 
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              });
-                                                            },
-                                                            child: Text('Back'))
-                                                      ],
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                });
+                                                              },
+                                                              child:
+                                                                  Text('Back'))
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              );
-                                            });
-                                      },
-                                      child: Text('View Image'))
+                                                );
+                                              });
+                                        },
+                                        child: Icon(Icons.image)),
+                                  )
                                 ],
                               );
                             }),
@@ -215,9 +226,22 @@ class _CardItemState extends State<CardItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Color(0xffF5C69D),
       child: ListTile(
-        title: Text(widget.itemTitle),
-        subtitle: Text(widget.itemDescription),
+        title: Text(
+          widget.itemTitle,
+          style: GoogleFonts.spectral(
+              color: Color(0xff3F5856),
+              fontSize: 16,
+              fontWeight: FontWeight.w700),
+        ),
+        subtitle: Text(
+          "Info Validated: " + widget.itemDescription,
+          style: GoogleFonts.spectral(
+              color: Color(0xff3F5856),
+              fontSize: 14,
+              fontWeight: FontWeight.w500),
+        ),
       ),
     );
   }

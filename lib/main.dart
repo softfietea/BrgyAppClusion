@@ -15,7 +15,6 @@ import 'package:brgyapp/screens/wrapperrole.dart';
 import 'package:brgyapp/services/authservices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import './model/customvalidation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,9 +36,6 @@ class MyApp extends StatelessWidget {
         ),
         Provider<AppUser>(
           create: (_) => AppUser(),
-        ),
-        Provider<CustomValidation>(
-          create: (context) => CustomValidation(),
         ),
         StreamProvider(
             create: (context) => context.read<AuthService>().authStateChanges,
