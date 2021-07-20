@@ -119,7 +119,18 @@ class AuthService {
 
   //forgetpassword
   Future forgetPassword(String email) async {
-    await _auth.sendPasswordResetEmail(email: email);
+    try {
+      await _auth.sendPasswordResetEmail(email: email).whenComplete(() =>
+          Fluttertoast.showToast(
+              textColor: Color(0xff3F5856),
+              msg: "Password Reset Request was sent sucessfully",
+              backgroundColor: Color(0xffF5C69D)));
+    } catch (e) {
+      Fluttertoast.showToast(
+          textColor: Color(0xff3F5856),
+          msg: "Something Went wrong...",
+          backgroundColor: Color(0xffF5C69D));
+    }
   }
 
   //delete account

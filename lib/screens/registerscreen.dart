@@ -20,7 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController rEmailR = TextEditingController();
   final TextEditingController rPasswordR = TextEditingController();
   final TextEditingController rCPasswordR = TextEditingController();
-
+  final GlobalKey<FormState> _formRegister = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -31,6 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           builder: (context) => Container(
             child: SingleChildScrollView(
               child: Form(
+                key: _formRegister,
                 child: Column(
                   children: [
                     Center(
@@ -56,6 +57,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
                         margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
                         child: TextFormField(
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.length > 30 ||
+                                value.length < 5) {
+                              rFullnameR.clear();
+                              return ('Please input a valid Name');
+                            } else {
+                              return null;
+                            }
+                          },
                           style: TextStyle(color: Colors.white),
                           controller: rFullnameR,
                           autofocus: false,
@@ -84,6 +96,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
                         margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
                         child: TextFormField(
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.length > 30 ||
+                                value.length < 5) {
+                              rEmailR.clear();
+                              return ('Please input a valid Email');
+                            } else {
+                              return null;
+                            }
+                          },
                           style: TextStyle(color: Colors.white),
                           controller: rEmailR,
                           autofocus: false,
@@ -113,6 +136,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
                         margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
                         child: TextFormField(
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.length > 30 ||
+                                value.length < 6) {
+                              rPasswordR.clear();
+                              return ('Please input a valid Password, it must be atleast 6 letters');
+                            } else {
+                              return null;
+                            }
+                          },
                           obscureText: true,
                           style: TextStyle(color: Colors.white),
                           controller: rPasswordR,
@@ -143,6 +177,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
                         margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
                         child: TextFormField(
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.length > 30 ||
+                                value.length < 6 ||
+                                value != rPasswordR.text) {
+                              rCPasswordR.clear();
+                              return ('make sure the password is the same in the first one');
+                            } else {
+                              return null;
+                            }
+                          },
                           obscureText: true,
                           style: TextStyle(color: Colors.white),
                           controller: rCPasswordR,
@@ -176,12 +222,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               primary: Color(0xffF5C69D),
                               padding: EdgeInsets.fromLTRB(70, 10, 70, 10)),
                           onPressed: () async {
-                            await context.read<AuthService>().signUp(
-                                rEmailR.text.trim(),
-                                rPasswordR.text.trim(),
-                                rFullnameR.text.trim());
+                            if (_formRegister.currentState.validate()) {
+                              await context.read<AuthService>().signUp(
+                                  rEmailR.text.trim(),
+                                  rPasswordR.text.trim(),
+                                  rFullnameR.text.trim());
 
-                            Navigator.pushNamed(context, '/');
+                              Navigator.pushNamed(context, '/');
+                            }
                           },
                           child: Text(
                             'Register',

@@ -14,17 +14,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final GlobalKey<FormState> _formLogin = GlobalKey<FormState>();
 
-  _validateEmail() {
-    if (lemail == null) {
-      return ('Please input an Email');
-    }
-    if (lemail.value.toString().length > 50 &&
-        lemail.value.toString().length < 5) {
-      return ('Invalid Email');
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,12 +38,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextFormField(
                         style: TextStyle(color: Colors.white),
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return ('Please input an Email');
-                          } else if (value.length > 50 && value.length < 5) {
-                            return ('Invalid Email');
+                          if (value == null ||
+                              value.isEmpty ||
+                              value.length > 30 ||
+                              value.length < 5) {
+                            lemail.clear();
+                            return ('Please input a valid Email');
+                          } else {
+                            return null;
                           }
-                          return null;
                         },
                         controller: lemail,
                         autofocus: false,
@@ -84,7 +76,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
                       margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
                       child: TextFormField(
-                        validator: _validateEmail(),
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value.length > 30 ||
+                              value.length < 6) {
+                            lpassword.clear();
+                            return ('Please input a valid Password');
+                          } else {
+                            return null;
+                          }
+                        },
                         obscureText: true,
                         style: TextStyle(color: Colors.white),
                         controller: lpassword,
@@ -148,6 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (_formLogin.currentState.validate()) {
                             await context.read<AuthService>().signIn(
                                 lemail.text.trim(), lpassword.text.trim());
+
                             Navigator.pushNamed(context, '/');
                           }
                         },
