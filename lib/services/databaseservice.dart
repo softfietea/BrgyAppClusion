@@ -36,7 +36,6 @@ class DatabaseService {
         'fullname': fullname,
         'email': email,
         'address': "",
-        'infovalidated': "no",
         'brgyIDValidated': "no",
         'role': "resident",
       });

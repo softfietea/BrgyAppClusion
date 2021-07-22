@@ -38,6 +38,7 @@ dependencies:
   percent_indicator: ^3.0.1
   firebase_storage: ^9.0.0
   image_picker: ^0.8.1+4
+  pie_chart: ^4.0.1
 
   
 

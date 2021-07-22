@@ -88,18 +88,139 @@ class _HealthCareScreenState extends State<HealthCareScreen> {
                                   snapshot.data.docs[index]["fullname"];
                               String itemDescription =
                                   snapshot.data.docs[index]["infovalidated"];
+
+                              String itemFever =
+                                  snapshot.data.docs[index]["hasFever"];
+
+                              String itemAddress =
+                                  snapshot.data.docs[index]["address"];
+
+                              String itemDrycough =
+                                  snapshot.data.docs[index]["hasDryCough"];
+
+                              String itemOthers =
+                                  snapshot.data.docs[index]["hasOthers"];
+
+                              String itemSoreThroat =
+                                  snapshot.data.docs[index]["hasSoreThroat"];
+
+                              String itemTiredness =
+                                  snapshot.data.docs[index]["hasTiredness"];
+
+                              String itemVaccinationStatus =
+                                  snapshot.data.docs[index]["isVaccinated"];
+
                               return Row(
                                 children: [
                                   Expanded(
-                                    child: CardItem(
-                                        itemTitle: itemTitle,
-                                        itemDescription: itemDescription),
+                                    child: GestureDetector(
+                                      onLongPress: () {
+                                        showDialog(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return WillPopScope(
+                                                onWillPop: () {},
+                                                child: AlertDialog(
+                                                  backgroundColor:
+                                                      Color(0xffF5C69D),
+                                                  content: Container(
+                                                    height: 240,
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                            "$itemTitle Information ",
+                                                            style: GoogleFonts.spectral(
+                                                                color: Color(
+                                                                    0xff3F5856),
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w800)),
+                                                        Text(
+                                                            "Fever: $itemFever",
+                                                            style: GoogleFonts.spectral(
+                                                                color: Color(
+                                                                    0xff3F5856),
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700)),
+                                                        Text(
+                                                            "Dry Cough: $itemDrycough",
+                                                            style: GoogleFonts.spectral(
+                                                                color: Color(
+                                                                    0xff3F5856),
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700)),
+                                                        Text(
+                                                            "Sore Throat: $itemSoreThroat",
+                                                            style: GoogleFonts.spectral(
+                                                                color: Color(
+                                                                    0xff3F5856),
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700)),
+                                                        Text(
+                                                            "Tiredness: $itemTiredness",
+                                                            style: GoogleFonts.spectral(
+                                                                color: Color(
+                                                                    0xff3F5856),
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700)),
+                                                        Text(
+                                                            "Others: $itemOthers",
+                                                            style: GoogleFonts.spectral(
+                                                                color: Color(
+                                                                    0xff3F5856),
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700)),
+                                                        Text(
+                                                            "Vaccinated status: $itemVaccinationStatus ",
+                                                            style: GoogleFonts.spectral(
+                                                                color: Color(
+                                                                    0xff3F5856),
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700)),
+                                                        ElevatedButton(
+                                                            style: ElevatedButton
+                                                                .styleFrom(
+                                                                    primary: Color(
+                                                                        0xff3F5856)),
+                                                            onPressed:
+                                                                () async {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Text('Back'))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            });
+                                      },
+                                      child: Container(
+                                        child: CardItem(
+                                            itemTitle: itemTitle,
+                                            itemDescription: itemDescription),
+                                      ),
+                                    ),
                                   ),
                                   Container(
                                     height: 70,
                                     child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                            primary: Color(0xffF5C69D)),
+                                            primary: Colors.redAccent),
                                         onPressed: () async {
                                           updateInfoValidate(uid);
                                         },
@@ -110,7 +231,7 @@ class _HealthCareScreenState extends State<HealthCareScreen> {
                                     margin: EdgeInsets.fromLTRB(3.5, 0, 0, 0),
                                     child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                            primary: Color(0xffF5C69D)),
+                                            primary: Colors.blueGrey),
                                         onPressed: () async {
                                           await refreshDialog();
                                           await showHealthID(uid);
@@ -154,7 +275,7 @@ class _HealthCareScreenState extends State<HealthCareScreen> {
                                                                   height: 50,
                                                                   width: 50,
                                                                   child: Text(
-                                                                      errorText),
+                                                                      "No image Submitted"),
                                                                 ),
                                                           ElevatedButton(
                                                               onPressed: () {
@@ -194,7 +315,48 @@ class _HealthCareScreenState extends State<HealthCareScreen> {
                     primary: Color(0xff3F5856),
                     padding: EdgeInsets.fromLTRB(30, 10, 30, 10)),
                 onPressed: () async {
-                  context.read<AuthService>().signOut();
+                  showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return WillPopScope(
+                          onWillPop: () {},
+                          child: AlertDialog(
+                            backgroundColor: Color(0xffF5C69D),
+                            content: Container(
+                              height: 120,
+                              child: Column(
+                                children: [
+                                  Text("Are you sure you want to log out? ",
+                                      style: GoogleFonts.spectral(
+                                          color: Color(0xff3F5856),
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w700)),
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Color(0xff3F5856)),
+                                      onPressed: () async {
+                                        await context
+                                            .read<AuthService>()
+                                            .signOut()
+                                            .whenComplete(() =>
+                                                Navigator.pushNamed(
+                                                    context, '/'));
+                                      },
+                                      child: Text('Confirm Logout')),
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Color(0xff3F5856)),
+                                      onPressed: () async {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('Back'))
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      });
                 },
                 child: Text(
                   'Logout',

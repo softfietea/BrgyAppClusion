@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:pie_chart/pie_chart.dart' as pipie;
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -128,7 +129,7 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
         .get();
     setState(() {
       userDryCough = snapshot.docs.length;
-      totalRisk = totalRisk + 5;
+      totalRisk = totalRisk + userDryCough * 1;
       print(userDryCough);
     });
   }
@@ -140,7 +141,7 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
         .get();
     setState(() {
       userFever = snapshot.docs.length;
-      totalRisk = totalRisk + 5;
+      totalRisk = totalRisk + userFever * 1;
       print(userFever);
     });
   }
@@ -152,7 +153,7 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
         .get();
     setState(() {
       userSoreThroat = snapshot.docs.length;
-      totalRisk = totalRisk + 5;
+      totalRisk = totalRisk + userSoreThroat * 1;
       print(userSoreThroat);
     });
   }
@@ -164,7 +165,7 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
         .get();
     setState(() {
       userTiredness = snapshot.docs.length;
-      totalRisk = totalRisk + 2;
+      totalRisk = totalRisk + userTiredness * 1;
       print(userTiredness);
     });
   }
@@ -172,6 +173,7 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
   getVaccinated() async {
     final QuerySnapshot snapshot = await usersRef
         .where('role', isEqualTo: 'resident')
+        .where('infovalidated', isEqualTo: ("yes"))
         .where('isVaccinated', isEqualTo: 'yes')
         .get();
     setState(() {
@@ -184,12 +186,13 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
   getNotVaccinated() async {
     final QuerySnapshot snapshot = await usersRef
         .where('role', isEqualTo: 'resident')
+        .where('infovalidated', isEqualTo: ("yes"))
         .where('isVaccinated', isEqualTo: 'no')
         .get();
 
     setState(() {
       userNotVaccinated = snapshot.docs.length;
-      totalRisk = totalRisk + 2;
+      totalRisk = totalRisk + userNotVaccinated * 2;
       print(userNotVaccinated);
     });
   }
@@ -237,7 +240,6 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
                   )),
               Row(
                 children: [
-                  RotatedBox(quarterTurns: 3, child: Text('Number of Cases')),
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 20, 10, 0),
                     height: 200,
@@ -245,106 +247,32 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 22.0, bottom: 20),
                       child: SizedBox(
-                        width: 400,
-                        height: 400,
-                        child: LineChart(
-                          LineChartData(
-                            lineTouchData: LineTouchData(
-                              touchTooltipData: LineTouchTooltipData(
-                                  maxContentWidth: 100,
-                                  tooltipBgColor: Colors.orange,
-                                  getTooltipItems: (touchedSpots) {
-                                    return touchedSpots
-                                        .map((LineBarSpot touchedSpot) {
-                                      final textStyle = TextStyle(
-                                        color: touchedSpot.bar.colors[0],
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                      );
-                                      return LineTooltipItem(
-                                          '${touchedSpot.x}, ${touchedSpot.y.toStringAsFixed(2)}',
-                                          textStyle);
-                                    }).toList();
-                                  }),
-                              handleBuiltInTouches: true,
-                              getTouchLineStart: (data, index) => 0,
-                            ),
-                            lineBarsData: [
-                              LineChartBarData(
-                                colors: [
-                                  Colors.green,
-                                ],
-                                spots: [
-                                  FlSpot(0, 0),
-                                  FlSpot(overallUsers.toDouble(),
-                                      userVaccinated.toDouble())
-                                ], //y left x is right
-                                isCurved: true,
-                                isStrokeCapRound: true,
-                                barWidth: 3,
-                                belowBarData: BarAreaData(
-                                  show: false,
-                                ),
-                                dotData: FlDotData(show: true),
-                              ),
-                              LineChartBarData(
-                                colors: [
-                                  Colors.red,
-                                ],
-                                spots: [
-                                  FlSpot(0, 0),
-                                  FlSpot(overallUsers.toDouble(),
-                                      userNotVaccinated.toDouble())
-                                ],
-                                //y left x is right
-                                isCurved: true,
-                                isStrokeCapRound: true,
-                                barWidth: 3,
-                                belowBarData: BarAreaData(
-                                  show: false,
-                                ),
-                                dotData: FlDotData(show: true),
-                              ),
+                          width: 400,
+                          height: 400,
+                          child: pipie.PieChart(
+                            animationDuration: Duration(milliseconds: 3000),
+                            legendOptions: pipie.LegendOptions(
+                                legendTextStyle: TextStyle(
+                              color: Colors.white,
+                            )),
+                            colorList: [
+                              Colors.greenAccent,
+                              Colors.redAccent,
+                              Colors.grey,
                             ],
-                            minY: 0,
-                            maxY: overallUsers.toDouble(),
-                            titlesData: FlTitlesData(
-                              leftTitles: SideTitles(
-                                showTitles: true,
-                                getTextStyles: (value) => const TextStyle(
-                                    color: Colors.blueGrey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                                margin: 16,
-                              ),
-                              rightTitles: SideTitles(showTitles: false),
-                              bottomTitles: SideTitles(
-                                showTitles: true,
-                                getTextStyles: (value) => const TextStyle(
-                                    color: Colors.blueGrey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                                margin: 16,
-                              ),
-                              topTitles: SideTitles(showTitles: false),
-                            ),
-                            gridData: FlGridData(
-                              show: true,
-                              drawHorizontalLine: true,
-                              drawVerticalLine: true,
-                              horizontalInterval: 1.5,
-                              verticalInterval: 5,
-                              checkToShowHorizontalLine: (value) {
-                                return value.toInt() == 0;
-                              },
-                              checkToShowVerticalLine: (value) {
-                                return value.toInt() == 0;
-                              },
-                            ),
-                            borderData: FlBorderData(show: false),
-                          ),
-                        ),
-                      ),
+                            dataMap: {
+                              "Vaccinated": userVaccinated.toDouble(),
+                              "Not Vaccinated": userNotVaccinated.toDouble(),
+                              "Unknown": unknownStatus.toDouble()
+                            },
+                            chartValuesOptions: pipie.ChartValuesOptions(
+                                chartValueBackgroundColor: Color(0xffF5C69D),
+                                showChartValueBackground: false,
+                                chartValueStyle: TextStyle(
+                                    color: Color(0xff3F5856),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700)),
+                          )),
                     ),
                   ),
                 ],
@@ -492,7 +420,7 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
                         animation: true,
                         lineHeight: 40.0,
                         animationDuration: 2500,
-                        percent: totalRisk < 100 ? totalRisk / 100 : 100 / 100,
+                        percent: totalRisk < 100 ? totalRisk / 100 : 1.0,
                         center: RotatedBox(
                             quarterTurns: 1,
                             child: Text(totalRisk.toInt().toString() + " %")),

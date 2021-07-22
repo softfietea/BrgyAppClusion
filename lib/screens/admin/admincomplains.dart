@@ -28,7 +28,7 @@ class _AdminComplainScreenState extends State<AdminComplainScreen> {
           Column(
         children: [
           Container(
-            height: 200,
+            height: 600,
             margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
             child: Column(
               children: [

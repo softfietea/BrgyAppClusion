@@ -254,12 +254,20 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                                                                     ),
                                                                   )
                                                                 : Container(
-                                                                    height: 50,
-                                                                    width: 50,
-                                                                    child: Text(
-                                                                        errorText),
+                                                                    height: 350,
+                                                                    width: 350,
+                                                                    child:
+                                                                        Center(
+                                                                      child: Text(
+                                                                          "No Image Submitted"),
+                                                                    ),
                                                                   ),
                                                             ElevatedButton(
+                                                                style: ElevatedButton
+                                                                    .styleFrom(
+                                                                        primary:
+                                                                            Color(
+                                                                                0xff3F5856)),
                                                                 onPressed: () {
                                                                   setState(() {
                                                                     urlTest =
