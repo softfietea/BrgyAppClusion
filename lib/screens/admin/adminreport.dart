@@ -4,6 +4,7 @@ import 'package:brgyapp/services/authservices.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -24,14 +25,16 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
   int userFever = 0;
   int userSoreThroat = 0;
   int userTiredness = 0;
-  int totalRisk = 0;
-  int averageRisk = 0;
+  double totalRisk = 0.0;
+  double averageRisk = 0.0;
   int numOfSinovac = 0;
   int numOfAstra = 0;
   int numOfPfizer = 0;
   int numOfModerna = 0;
   int numOfGamaleya = 0;
   int numOfNovavax = 0;
+  int unknownStatus = 0;
+  int totalParticipated = 0;
 
   @override
   void initState() {
@@ -48,7 +51,7 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
     addModernaNumber();
     addNovavaxNumber();
     addPfizerNumber();
-
+    discoverUnkown();
     super.initState();
   }
 
@@ -200,6 +203,17 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
     });
   }
 
+  discoverUnkown() async {
+    await getVaccinated();
+    await getNotVaccinated();
+    await getAllUsers();
+    setState(() {
+      totalParticipated = userVaccinated + userNotVaccinated;
+      unknownStatus = overallUsers - totalParticipated;
+      print("HASFASFASFDASd" + totalParticipated.toString());
+    });
+  }
+
   final spots = List.generate(100, (i) => (i - 50) / 10)
       .map((x) => FlSpot(x, sin(x)))
       .toList();
@@ -335,29 +349,83 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
                   ),
                 ],
               ),
-              Text('Number of Residents'),
               Container(
-                  margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                  child: Text('Elements: ')),
-              Row(
-                children: [
-                  Container(
-                    height: 8,
-                    width: 8,
-                    color: Colors.green,
+                height: 180,
+                margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                decoration: BoxDecoration(
+                  color: Color(0xffF5C69D),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(children: [
+                  Text(
+                    'Number of Residents',
+                    style: GoogleFonts.spectral(
+                        color: Color(0xff3F5856),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700),
                   ),
-                  Text(' Vaccinated ' + userVaccinated.toString()),
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                    height: 8,
-                    width: 8,
-                    color: Colors.red,
+                  Row(
+                    children: [
+                      Container(
+                        height: 8,
+                        width: 8,
+                        color: Colors.blue,
+                      ),
+                      Text(
+                        ' Total No. Residents:  ' + overallUsers.toString(),
+                        style: GoogleFonts.spectral(
+                            color: Color(0xff3F5856),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700),
+                      ),
+                    ],
                   ),
-                  Text(' Not Vaccinated ' + userNotVaccinated.toString()),
-                ],
+                  Row(
+                    children: [
+                      Container(
+                        height: 8,
+                        width: 8,
+                        color: Colors.green,
+                      ),
+                      Text(
+                        ' Vaccinated: ' + userVaccinated.toString(),
+                        style: GoogleFonts.spectral(
+                            color: Color(0xff3F5856),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        height: 8,
+                        width: 8,
+                        color: Colors.red,
+                      ),
+                      Text(' Not Vaccinated: ' + userNotVaccinated.toString(),
+                          style: GoogleFonts.spectral(
+                              color: Color(0xff3F5856),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700)),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        height: 8,
+                        width: 8,
+                        color: Colors.red,
+                      ),
+                      Text(' Unknown: ' + unknownStatus.toString(),
+                          style: GoogleFonts.spectral(
+                              color: Color(0xff3F5856),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700)),
+                    ],
+                  ),
+                ]),
               ),
               Row(
                 children: [
@@ -385,7 +453,24 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
                                     primary: Color(0xffF5C69D),
                                     padding:
                                         EdgeInsets.fromLTRB(70, 10, 70, 10)),
-                                onPressed: () async {},
+                                onPressed: () async {
+                                  context
+                                      .read<AuthService>()
+                                      .makeAnAnnouncement(
+                                          "LOCKDOWN LOCKDOWN LOCKDOWN",
+                                          "ALL RESIDENTS IN THE AREA PLEASE BE INFORMED THAT WE ARE UNDER IN LOCK DOWN STATUS, PLEASE WAIT FOR MORE INFORMATION WE WILL ANNOUNCE THE GUIDELINES IN OUR STATUS !")
+                                      .whenComplete(() => Fluttertoast.showToast(
+                                          textColor: Color(0xff3F5856),
+                                          msg:
+                                              "Announcement was sucessfully broadcasted",
+                                          backgroundColor: Color(0xffF5C69D)))
+                                      .onError((error, stackTrace) =>
+                                          Fluttertoast.showToast(
+                                              textColor: Color(0xff3F5856),
+                                              msg: "Something went wrong",
+                                              backgroundColor:
+                                                  Color(0xffF5C69D)));
+                                },
                                 child: Text(
                                   'Declare Lockdown',
                                   style: GoogleFonts.spectral(
@@ -410,7 +495,7 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
                         percent: totalRisk < 100 ? totalRisk / 100 : 100 / 100,
                         center: RotatedBox(
                             quarterTurns: 1,
-                            child: Text(totalRisk.toString() + " %")),
+                            child: Text(totalRisk.toInt().toString() + " %")),
                         linearStrokeCap: LinearStrokeCap.roundAll,
                         progressColor:
                             (totalRisk / 100) > 0.5 ? Colors.red : Colors.green,
@@ -426,6 +511,7 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Color(0xffF5C69D), width: 4),
                         borderRadius: BorderRadius.circular(4)),
                     color: const Color(0xff3F5856),
                     child: BarChart(
@@ -568,36 +654,104 @@ class _AdminReportScreenState extends State<AdminReportScreen> {
                   ),
                 ),
               ),
-              Row(
-                children: [
-                  Text(' Pfizer (Pf) ' + numOfPfizer.toString()),
-                ],
+              Text(
+                "Preffered Vaccines ",
+                style: GoogleFonts.spectral(
+                    color: Color(
+                      0xffF5C69D,
+                    ),
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20),
               ),
-              Row(
-                children: [
-                  Text(' AstraZeneca (Az) ' + numOfAstra.toString()),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(' Sinovac (Sv) ' + numOfSinovac.toString()),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(' Moderna (Mn)' + numOfModerna.toString()),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(' Gameleya (Gl) ' + numOfGamaleya.toString()),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(' NovaVax (Nv) ' + numOfNovavax.toString()),
-                ],
-              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  decoration: BoxDecoration(
+                      color: Color(0xffF5C69D),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    children: [
+                      Row(children: [
+                        Text(
+                            ' Pfizer (Pf)                 ' +
+                                numOfPfizer.toString(),
+                            style: GoogleFonts.spectral(
+                                color: Color(
+                                  0xff3F5856,
+                                ),
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18)),
+                      ]),
+                      Row(
+                        children: [
+                          Text(
+                            ' AstraZeneca (Az)    ' + numOfAstra.toString(),
+                            style: GoogleFonts.spectral(
+                                color: Color(
+                                  0xff3F5856,
+                                ),
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            ' Sinovac (Sv)              ' +
+                                numOfSinovac.toString(),
+                            style: GoogleFonts.spectral(
+                                color: Color(
+                                  0xff3F5856,
+                                ),
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            ' Moderna (Mn)         ' + numOfModerna.toString(),
+                            style: GoogleFonts.spectral(
+                                color: Color(
+                                  0xff3F5856,
+                                ),
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            ' Gameleya (Gl)          ' +
+                                numOfGamaleya.toString(),
+                            style: GoogleFonts.spectral(
+                                color: Color(
+                                  0xff3F5856,
+                                ),
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            ' NovaVax (Nv)           ' +
+                                numOfNovavax.toString(),
+                            style: GoogleFonts.spectral(
+                                color: Color(
+                                  0xff3F5856,
+                                ),
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )),
               Container(
                 margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                 child: ElevatedButton(

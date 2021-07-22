@@ -156,9 +156,16 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                     child: AlertDialog(
                                       backgroundColor: Color(0xffF5C69D),
                                       content: Container(
-                                        height: 100,
+                                        height: 120,
                                         child: Column(
                                           children: [
+                                            Text(
+                                                "Are you sure you want to log out? ",
+                                                style: GoogleFonts.spectral(
+                                                    color: Color(0xff3F5856),
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w700)),
                                             ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                     primary: Color(0xff3F5856)),
@@ -167,8 +174,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                                       .read<AuthService>()
                                                       .signOut()
                                                       .whenComplete(() =>
-                                                          Navigator.pop(
-                                                              context));
+                                                          Navigator.pushNamed(
+                                                              context, '/'));
                                                 },
                                                 child: Text('Confirm Logout')),
                                             ElevatedButton(
@@ -203,6 +210,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                               padding: EdgeInsets.fromLTRB(30, 10, 30, 10)),
                           onPressed: () async {
                             Navigator.pushNamed(context, '/adminreport');
+                            FocusScope.of(context).unfocus();
                           },
                           child: Text(
                             'Analytics',
@@ -222,6 +230,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                               padding: EdgeInsets.fromLTRB(30, 10, 30, 10)),
                           onPressed: () async {
                             Navigator.pushNamed(context, '/adminmanagement');
+                            FocusScope.of(context).unfocus();
                           },
                           child: Text(
                             'Manage',
@@ -243,6 +252,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                           padding: EdgeInsets.fromLTRB(30, 10, 30, 10)),
                       onPressed: () async {
                         Navigator.pushNamed(context, '/admincomplains');
+                        FocusScope.of(context).unfocus();
                       },
                       child: Text(
                         'Reports',

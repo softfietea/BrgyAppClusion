@@ -1,4 +1,5 @@
 import 'package:brgyapp/model/userapp.dart';
+import 'package:brgyapp/screens/admin/adminannouncement.dart';
 import 'package:brgyapp/screens/admin/admincomplains.dart';
 import 'package:brgyapp/screens/admin/adminhome.dart';
 import 'package:brgyapp/screens/admin/adminmanagement.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
           '/adminmanagement': (context) => AdminManagementScreen(),
           '/adminreport': (context) => AdminReportScreen(),
           '/admincomplains': (context) => AdminComplainScreen(),
+          '/adminannouncement': (context) => AdminAnnouncementScreen(),
         },
         title: 'Flutter Demo',
         theme: ThemeData(

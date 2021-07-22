@@ -2,6 +2,7 @@ import 'package:brgyapp/services/authservices.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -38,6 +39,10 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
     return await useCollection.doc(index).update({
       'brgyIDValidated': 'no',
     });
+  }
+
+  Future deleteThisUser(index) async {
+    return await useCollection.doc(index).delete();
   }
 
   Future showHealthID(uid) async {
@@ -105,15 +110,93 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                                 return Row(
                                   children: [
                                     Expanded(
-                                      child: CardItem(
-                                          itemTitle: itemTitle,
-                                          itemDescription: itemDescription),
+                                      child: GestureDetector(
+                                        onLongPress: () {
+                                          showDialog(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return WillPopScope(
+                                                  onWillPop: () {},
+                                                  child: AlertDialog(
+                                                    backgroundColor:
+                                                        Color(0xffF5C69D),
+                                                    content: Container(
+                                                        height: 120,
+                                                        child: Column(
+                                                          children: [
+                                                            Text(
+                                                                "Are you sure you want to delete this user ? ",
+                                                                style: GoogleFonts.spectral(
+                                                                    color: Color(
+                                                                        0xff3F5856),
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700)),
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Container(
+                                                                  margin:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              10),
+                                                                  child: ElevatedButton(
+                                                                      style: ElevatedButton.styleFrom(primary: Color(0xff3F5856)),
+                                                                      onPressed: () async {
+                                                                        await deleteThisUser(uid).whenComplete(
+                                                                            () {
+                                                                          Fluttertoast.showToast(
+                                                                              textColor: Color(0xff3F5856),
+                                                                              msg: "Successfully Deleted",
+                                                                              backgroundColor: Color(0xffF5C69D));
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        }).onError((error, stackTrace) => Fluttertoast.showToast(
+                                                                            textColor: Color(
+                                                                                0xff3F5856),
+                                                                            msg:
+                                                                                "Something went wrong",
+                                                                            backgroundColor:
+                                                                                Color(0xffF5C69D)));
+                                                                      },
+                                                                      child: Text('Yes')),
+                                                                ),
+                                                                Container(
+                                                                  margin:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              10),
+                                                                  child: ElevatedButton(
+                                                                      style: ElevatedButton.styleFrom(primary: Color(0xff3F5856)),
+                                                                      onPressed: () async {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                      child: Text('No')),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        )),
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                        child: CardItem(
+                                            itemTitle: itemTitle,
+                                            itemDescription: itemDescription),
+                                      ),
                                     ),
                                     Container(
                                       height: 70,
                                       child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                              primary: Color(0xffF5C69D)),
+                                              primary: Colors.lightGreen),
                                           onPressed: () async {
                                             if (itemDescription == 'no') {
                                               updateBrgyIDValidate(uid);
@@ -130,7 +213,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                                       margin: EdgeInsets.fromLTRB(3.5, 0, 0, 0),
                                       child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                              primary: Color(0xffF5C69D)),
+                                              primary: Colors.cyan),
                                           onPressed: () async {
                                             await refreshDialog();
                                             await showHealthID(uid);
@@ -188,7 +271,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                                                                   });
                                                                 },
                                                                 child: Text(
-                                                                    'Back'))
+                                                                    'Back')),
                                                           ],
                                                         ),
                                                       ),
@@ -207,7 +290,7 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
               ),
             ),
             Container(
-              margin: EdgeInsets.fromLTRB(5, 20, 5, 0),
+              margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       side: BorderSide(width: 1.0, color: Color(0xffF5C69D)),
@@ -218,6 +301,24 @@ class _AdminManagementScreenState extends State<AdminManagementScreen> {
                   },
                   child: Text(
                     'back',
+                    style: GoogleFonts.spectral(
+                        color: Color(0xffF5C69D),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700),
+                  )),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      side: BorderSide(width: 1.0, color: Color(0xffF5C69D)),
+                      primary: Color(0xff3F5856),
+                      padding: EdgeInsets.fromLTRB(30, 10, 30, 10)),
+                  onPressed: () async {
+                    Navigator.pushNamed(context, '/adminannouncement');
+                  },
+                  child: Text(
+                    'Announcement',
                     style: GoogleFonts.spectral(
                         color: Color(0xffF5C69D),
                         fontSize: 14,

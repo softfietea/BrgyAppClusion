@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AdminComplainScreen extends StatefulWidget {
@@ -9,6 +10,13 @@ class AdminComplainScreen extends StatefulWidget {
 }
 
 class _AdminComplainScreenState extends State<AdminComplainScreen> {
+  final CollectionReference reportCollection =
+      FirebaseFirestore.instance.collection('report');
+
+  Future deleteAnnouncement(index) async {
+    await reportCollection.doc(index).delete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +32,20 @@ class _AdminComplainScreenState extends State<AdminComplainScreen> {
             margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
             child: Column(
               children: [
+                Text(
+                  'Complaints',
+                  style: GoogleFonts.spectral(
+                      color: Color(0xffF5C69D),
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700),
+                ),
+                Text(
+                  'long press to delete',
+                  style: GoogleFonts.spectral(
+                      color: Color(0xffF5C69D),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700),
+                ),
                 StreamBuilder<QuerySnapshot>(
                     stream: widget._firestore.collection('report').snapshots(),
                     builder: (context, snapshot) {
@@ -35,13 +57,31 @@ class _AdminComplainScreenState extends State<AdminComplainScreen> {
                             shrinkWrap: true,
                             itemCount: snapshot.data.docs.length,
                             itemBuilder: (context, index) {
+                              String uid = snapshot.data.docs[index].id;
                               String itemTitle =
                                   snapshot.data.docs[index]['user'];
                               String itemDescription =
                                   snapshot.data.docs[index]['report'];
-                              return CardItem(
-                                  itemTitle: itemTitle,
-                                  itemDescription: itemDescription);
+                              return GestureDetector(
+                                onLongPress: () async {
+                                  await deleteAnnouncement(uid)
+                                      .whenComplete(() =>
+                                          Fluttertoast.showToast(
+                                              textColor: Color(0xff3F5856),
+                                              msg: "Successfully Deleted",
+                                              backgroundColor:
+                                                  Color(0xffF5C69D)))
+                                      .onError((error, stackTrace) =>
+                                          Fluttertoast.showToast(
+                                              textColor: Color(0xff3F5856),
+                                              msg: "Something went wrong",
+                                              backgroundColor:
+                                                  Color(0xffF5C69D)));
+                                },
+                                child: CardItem(
+                                    itemTitle: itemTitle,
+                                    itemDescription: itemDescription),
+                              );
                             }),
                       );
                     }),
