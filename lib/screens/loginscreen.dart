@@ -2,6 +2,7 @@ import 'package:brgyapp/services/authservices.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:async';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,8 +12,22 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController lemail = TextEditingController();
   final TextEditingController lpassword = TextEditingController();
-
   final GlobalKey<FormState> _formLogin = GlobalKey<FormState>();
+  bool _visible = false;
+
+  test() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      setState(() {
+        _visible = true;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    test();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +40,15 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Text('Clusion.',
-                      style: GoogleFonts.spectral(
-                          color: Color(0xffF5C69D),
-                          fontSize: 40,
-                          fontWeight: FontWeight.w700)),
+                  AnimatedOpacity(
+                    opacity: _visible ? 1.0 : 0.0,
+                    duration: Duration(milliseconds: 1000),
+                    child: Text('Clusion.',
+                        style: GoogleFonts.spectral(
+                            color: Color(0xffF5C69D),
+                            fontSize: 40,
+                            fontWeight: FontWeight.w700)),
+                  ),
 
                   //email
                   Container(

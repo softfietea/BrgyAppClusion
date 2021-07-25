@@ -21,6 +21,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController rPasswordR = TextEditingController();
   final TextEditingController rCPasswordR = TextEditingController();
   final GlobalKey<FormState> _formRegister = GlobalKey<FormState>();
+
+  bool _visible = false;
+
+  test() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      setState(() {
+        _visible = true;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    test();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -35,13 +52,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   children: [
                     Center(
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(0, 130, 0, 0),
-                        child: Text('Register.',
-                            style: GoogleFonts.spectral(
-                                color: Color(0xffF5C69D),
-                                fontSize: 40,
-                                fontWeight: FontWeight.w700)),
+                      child: AnimatedOpacity(
+                        duration: Duration(seconds: 2),
+                        opacity: _visible ? 1.0 : 0.0,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(0, 130, 0, 0),
+                          child: Text('Register.',
+                              style: GoogleFonts.spectral(
+                                  color: Color(0xffF5C69D),
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.w700)),
+                        ),
                       ),
                     ),
                     Container(
